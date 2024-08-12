@@ -60,7 +60,6 @@ class _HomeViewState extends ConsumerState<_HomeView> {
           delegate: SliverChildBuilderDelegate((context, index) {
         return Column(children: [
           MoviesSlideshow(movies: slideShowMovies),
-
           MovieHorizontalListview(
             movies: nowPlayingMovies,
             title: "En cines",
@@ -69,7 +68,6 @@ class _HomeViewState extends ConsumerState<_HomeView> {
               ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
             },
           ),
-
           MovieHorizontalListview(
             movies: upcomingMovies,
             title: "Proximamente",
@@ -78,7 +76,6 @@ class _HomeViewState extends ConsumerState<_HomeView> {
               ref.read(upcomingMoviesProvider.notifier).loadNextPage();
             },
           ),
-
           MovieHorizontalListview(
             movies: popularMovies,
             title: "Populares",
@@ -86,7 +83,6 @@ class _HomeViewState extends ConsumerState<_HomeView> {
               ref.read(popularMoviesProvider.notifier).loadNextPage();
             },
           ),
-
           MovieHorizontalListview(
             movies: topRatedMovies,
             title: "Mejor calificadas",
@@ -95,19 +91,9 @@ class _HomeViewState extends ConsumerState<_HomeView> {
               ref.read(topRatedMoviesProvider.notifier).loadNextPage();
             },
           ),
-
           const SizedBox(
             height: 10,
           )
-
-          // Expanded(child: ListView.builder(
-          //   itemCount: nowPlayingMovies.length,
-          //   itemBuilder: (context, index){
-          //   final movie = nowPlayingMovies[index];
-          //   return ListTile(
-          //    title: Text(movie.title),
-          //   );
-          // }))
         ]);
       }, childCount: 1))
     ]);
