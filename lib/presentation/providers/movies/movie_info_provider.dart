@@ -22,14 +22,12 @@ con el id de la pelicula y se localiza la pelicula que tiene asignada
   '12384753': Movie,
 }
 
-
-
 */
 
-typedef GetMoviewCallback = Future<Movie> Function(String movieId);
+typedef GetMovieCallback = Future<Movie> Function(String movieId);
 
 class MovieMapNotifier extends StateNotifier<Map<String, Movie>> {
-  GetMoviewCallback getMovie;
+  GetMovieCallback getMovie;
 
   MovieMapNotifier({required this.getMovie}) : super({});
 

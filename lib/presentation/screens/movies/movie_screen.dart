@@ -1,5 +1,6 @@
 import 'package:cinemapedia/domain/entities/movie.dart';
-import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,6 +21,7 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
     super.initState();
 
     ref.read(movieInfoProvider.notifier).loadMovie(widget.movieID);
+    ref.read(actorsByMovieProvider.notifier).loadActors(widget.movieID);
   }
 
   @override
@@ -56,7 +58,9 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
 class _MovieDetails extends StatelessWidget {
   final Movie movie;
 
-  const _MovieDetails({required this.movie});
+  const _MovieDetails({
+    required this.movie,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -120,11 +124,54 @@ class _MovieDetails extends StatelessWidget {
             ],
           ),
         ),
+        _ActorsByMovie(
+          movieID: movie.id.toString(),
+        ),
         const SizedBox(
-          height: 100,
+          height: 70,
         ),
       ],
     );
+  }
+}
+
+class _ActorsByMovie extends ConsumerWidget {
+  final String movieID;
+
+  const _ActorsByMovie({required this.movieID});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final actorsByMovie = ref.watch(actorsByMovieProvider)[movieID];
+
+    if (actorsByMovie == null) {
+      return const CircularProgressIndicator(
+        strokeWidth: 2,
+      );
+    }
+
+    final cast = actorsByMovie;
+
+    return SizedBox(
+        height: 300,
+        child: ListView.builder(
+            itemCount: cast.length,
+            itemBuilder: (context, index) {
+              final actor = cast[index];
+
+              return Container(
+                padding: const EdgeInsets.all(4),
+                width: 500,
+                child: Column(
+                  children: [
+                    ClipRRect(
+                      child: Image.network(actor.profilePath),
+                    ),
+                    Text(actor.name),
+                  ],
+                ),
+              );
+            }));
   }
 }
 
