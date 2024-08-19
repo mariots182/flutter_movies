@@ -3,6 +3,7 @@ import 'package:cinemapedia/presentation/providers/providers.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class MovieScreen extends ConsumerStatefulWidget {
   static const routeName = '/movie-screen';
@@ -155,20 +156,26 @@ class _ActorsByMovie extends ConsumerWidget {
     return SizedBox(
         height: 300,
         child: ListView.builder(
+            scrollDirection: Axis.horizontal,
             itemCount: cast.length,
             itemBuilder: (context, index) {
               final actor = cast[index];
 
               return Container(
                 padding: const EdgeInsets.all(4),
-                width: 500,
-                child: Column(
-                  children: [
-                    ClipRRect(
-                      child: Image.network(actor.profilePath),
-                    ),
-                    Text(actor.name),
-                  ],
+                width: 100,
+                child: GestureDetector(
+                  onTap: () {
+                    context.push('/actor/${actor.id}');
+                  },
+                  child: Column(
+                    children: [
+                      ClipRRect(
+                        child: Image.network(actor.profilePath),
+                      ),
+                      Text(actor.name),
+                    ],
+                  ),
                 ),
               );
             }));
