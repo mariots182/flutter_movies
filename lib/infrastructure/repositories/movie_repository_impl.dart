@@ -4,6 +4,7 @@ import 'package:cinemapedia/domain/repositories/movies_repository.dart';
 
 class MovieRepositoryImpl extends MoviesRepository {
   final MoviesDatasource datasource;
+
   MovieRepositoryImpl(this.datasource);
 
   @override
@@ -29,5 +30,10 @@ class MovieRepositoryImpl extends MoviesRepository {
   @override
   Future<Movie> getMovieById(String id) {
     return datasource.getMovieById(id);
+  }
+
+  @override
+  Future<List<Movie>> searchMovies(String query) {
+    return datasource.searchMovies(query);
   }
 }
