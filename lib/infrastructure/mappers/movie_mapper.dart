@@ -16,8 +16,8 @@ class MovieMapper {
       popularity: moviedb.popularity,
       posterPath: moviedb.posterPath != ''
           ? 'https://image.tmdb.org/t/p/w500${moviedb.posterPath}'
-          : 'no-poster',
-      releaseDate: moviedb.releaseDate,
+          : 'https://resizing.flixster.com/m1Q0L4ro8-KI3svEkjRToiHK5mM=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzL2NjMWQxZTFiLWIzMjEtNGIwMS1hNTgwLWQ4ZDU0NTBmNTBhYi53ZWJw',
+      releaseDate: moviedb.releaseDate ?? DateTime.now(),
       title: moviedb.title,
       video: moviedb.video,
       voteAverage: moviedb.voteAverage,
