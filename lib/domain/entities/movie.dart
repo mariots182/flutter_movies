@@ -1,4 +1,13 @@
+import 'package:isar/isar.dart';
+part 'movie.g.dart';
+
+// run flutter pub run build_runner build
+// to generate file.g.dart and remove the error
+
+@collection
 class Movie {
+  Id? isarId;
+
   final bool adult;
   final String backdropPath;
   final List<String> genreIds;
