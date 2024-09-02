@@ -9,9 +9,10 @@ typedef SearchMovieCallback = Future<List<Movie>> Function(String query);
 
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearchMovieCallback searchMovies;
-  final List<Movie> initialMovies;
+  List<Movie> initialMovies;
 
   StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
+  StreamController<bool> isLoadingStream = StreamController.broadcast();
   Timer? _debounceTimer;
 
   SearchMovieDelegate(
@@ -22,12 +23,15 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   }
 
   void _onQueryChanged(String query) {
+    isLoadingStream.add(true);
+
     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
 
     _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
       final movies = await searchMovies(query);
 
       debouncedMovies.add(movies);
+      isLoadingStream.add(false);
     });
   }
 
@@ -47,25 +51,49 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
-      FadeIn(
-          animate: query.isNotEmpty,
-          duration: const Duration(milliseconds: 300),
-          child: IconButton(
-              onPressed: () => query = '', icon: const Icon(Icons.clear)))
+      StreamBuilder<bool>(
+        stream: isLoadingStream.stream,
+        initialData: false, // Valor inicial (no está cargando)
+        builder: (context, snapshot) {
+          if (snapshot.data ?? false) {
+            return SpinPerfect(
+              duration: const Duration(milliseconds: 1500),
+              spins: 10,
+              animate: true,
+              child: IconButton(
+                onPressed: () => query = '',
+                icon: const Icon(Icons.refresh_outlined),
+              ),
+            );
+          }
+
+          return FadeIn(
+            animate: query.isNotEmpty,
+            duration: const Duration(milliseconds: 200),
+            child: IconButton(
+              onPressed: () => query = '',
+              icon: const Icon(Icons.clear),
+            ),
+          );
+        },
+      ),
     ];
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    return const Card();
+    return resultsAndSuggestions();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     _onQueryChanged(query);
 
+    return resultsAndSuggestions();
+  }
+
+  StreamBuilder<List<Movie>> resultsAndSuggestions() {
     return StreamBuilder(
-      // future: searchMovies(query),
       initialData: initialMovies,
       stream: debouncedMovies.stream,
       builder: (context, snapshot) {
